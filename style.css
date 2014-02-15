@@ -1,0 +1,28 @@
+h1 {
+    margin: 30px 30px 0;
+    font-family: sans-serif;
+    color: #792000;
+}
+
+nav {
+    margin: 0 30px 30px;
+    color: #999;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:link,
+a:visited {
+    color: #98948f;
+}
+
+a:hover {
+    color: #f19a35;
+}
+
+canvas {
+    margin: 0 30px;
+    box-shadow: 0 0 5px #999;
+}
