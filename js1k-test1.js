@@ -3,7 +3,7 @@ var canvas=document.getElementsByTagName("canvas")[0],
     ctx=canvas.getContext("2d");
 
 //init level
-var level=1,
+var level=0,
     score=0,
     ennemy=0;
 
