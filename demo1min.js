@@ -67,16 +67,12 @@ function B(o, x, y, v, w, s, z) {
     O.push(['b', x, y, i, j, z, s, 0, '43', 1, o]);
 }
 
-//collision
+//collision (approximation)
 function C(o, t) {
-    x = o[1],
-    y = o[2],
-    z = o[5],
-    v = t[1],
-    w = t[2],
-    u = t[5];
+    x = o[1] - t[1];
+    y = o[2] - t[2];
 
-    return !(v >= x+z || v+u <= x || w >= y+z || w+u <= y);
+    return M.sqrt(x*x + y*y) < 14;
 }
 
 //destroy an object
@@ -98,7 +94,7 @@ I = setInterval(function () {
     a.width += 0;
 
     //show the score
-    c.fillText('lvl' + L, 5, 15);
+    c.fillText('lvl' + L, 7, 15);
 
     //manage objects
     O.forEach(function(o) {

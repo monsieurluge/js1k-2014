@@ -57,16 +57,12 @@ function newBullet(origintype, originx, originy, targetx, targety, speed, zoom) 
     objects.push(['b', originx, originy, dx, dy, zoom, speed, 0, '43', 1, origintype]);
 }
 
-//collision
+//collision (approximation)
 function isCollision(obj, target) {
-    objx = obj[1],
-    objy = obj[2],
-    objz = obj[5],
-    targetx = target[1],
-    targety = target[2],
-    targetz = target[5];
+    distX = obj[1] - target[1];
+    distY = obj[2] - target[2];
 
-    return !(targetx >= objx+objz || targetx+targetz <= objx || targety >= objy+objz || targety+targetz <= objy);
+    return Math.sqrt(distX*distX + distY*distY) < 14;
 }
 
 //destroy an object
@@ -88,7 +84,7 @@ interval = setInterval(function () {
     a.width += 0;
 
     //show the score
-    c.fillText('lvl' + level, 5, 15);
+    c.fillText('lvl' + level, 7, 15);
 
     //manage objects
     objects.forEach(function(obj) {
