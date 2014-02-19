@@ -3,7 +3,7 @@
  * http://js1k.com/2014-dragons/
  * 
  * Demo author: monsieurluge
- * Demo name : xxxxx
+ * Demo name : Marcel VS the Ugly Angry Little Dragons
 **/
 
 //init
