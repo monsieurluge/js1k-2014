@@ -17,7 +17,7 @@ player = objects[0];
 
 //keys
 //left=37 up=38 right=39 down=40
-b.onkeydown=function(event) {
+onkeydown=function(event) {
 	keyCode = event.keyCode;
     player[3] = keyCode == 37 || keyCode == 39 ? keyCode-38 : 0;
     player[4] = keyCode == 38 || keyCode == 40 ? keyCode-39 : 0;
@@ -109,7 +109,7 @@ interval = setInterval(function () {
                 }
                 
                 //collision between an emmeny bullet and the player ?
-                obj[10] == 2 && target[0] == 1 && isCollision(obj, target) ? clearInterval(interval) : 0;
+                obj[10] == 2 && target[0] == 1 && isCollision(obj, target) && clearInterval(interval);
             });
 
             //destroy the bullet if out of the arena
@@ -130,6 +130,6 @@ interval = setInterval(function () {
         }
         
         //new game ?
-        objects.length < 2 ? newGame() : 0;
+        objects.length < 2 && newGame();
     });
 },33);
