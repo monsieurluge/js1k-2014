@@ -7,33 +7,31 @@
 **/
 
 //init
-level = 0,
+level = 0;
 arenaSize = 500;
 
 //add the player
 //type, x, y, dx, dy, zoom, speed, timebeforefire, tiles, size
-objects = [[1, 9, 9, 1, 0, 4, 3, 0, '0440333441100100', 4]];
+objects = [[1, 9, 9, 1, 0, 4, 3, 0, 'faafa115f23af13f', 4]];
 player = objects[0];
 
 //keys
 //left=37 up=38 right=39 down=40
-b.onkeydown=function(event) {
+onkeydown = function(event) {
 	keyCode = event.keyCode;
-    player[3] = keyCode == 37 || keyCode == 39 ? keyCode-38 : 0;
-    player[4] = keyCode == 38 || keyCode == 40 ? keyCode-39 : 0;
+    player[3] = Math.abs(keyCode-38) == 1 ? keyCode-38 : 0;
+    player[4] = Math.abs(keyCode-39) == 1 ? keyCode-39 : 0;
 };
 
 //new game
 function newGame() {
-    level++;
-
     //add the ennemies
     //type, x, y, dx, dy, zoom, speed, timebeforefire, tiles, size
-    for (object = 0; object < level; object++)
-        objects.push([2, Math.random()*arenaSize, Math.random()*arenaSize, 0, 0, 4+level, 1.1, 30, '1021011111101010', 4]);
+    for (object = ++level; object > 0; object--)
+        objects.push([2, Math.random()*arenaSize, Math.random()*arenaSize, 0, 0, 4+level, 1, 30, 'ffdb23bff223f6f6', 4]);
 }
 
-//fires a bullet
+//create a bullet
 function newBullet(origintype, originx, originy, targetx, targety, speed, zoom) {
     dx = targetx-originx;
     dy = targety-originy;
@@ -51,7 +49,7 @@ function newBullet(origintype, originx, originy, targetx, targety, speed, zoom) 
     objects.push([3, originx, originy, dx, dy, zoom, speed, 0, '3', 1, origintype]);
 }
 
-//collision (approximation)
+//collision (or something like that)
 function isCollision(obj, target) {
     distX = obj[1] - target[1];
     distY = obj[2] - target[2];
@@ -65,19 +63,19 @@ function destroy(obj) {
 }
 
 //player fire a bullet
-a.addEventListener('click', function(event) {
+onclick = function(event) {
     if (player[7] < 0) {
         newBullet(1, player[1], player[2], event.x, event.y, 6, 4);
         player[7] = 20;
     }
-}, 0);
+};
 
 //cycle
 interval = setInterval(function () {
     //clear the scene
     a.width += 0;
 
-    //show the score
+    //show the level
     c.fillText('lvl' + level, 5, 9);
 
     //manage objects
@@ -103,7 +101,7 @@ interval = setInterval(function () {
             //check for bullet collision
             objects.forEach(function(target) {
                 //collision between a player bullet and an ennemy ?
-                if (obj[10] == 2 && target[0] == 1 && isCollision(obj, target)) {
+                if (obj[10] == 1 && target[0] == 2 && isCollision(obj, target)) {
                     destroy(target);
                     destroy(obj);
                 }
@@ -125,10 +123,11 @@ interval = setInterval(function () {
         size = obj[9];
 
         for(i = 0; i < size*size; i++) {
-            c.fillStyle = '#' + ['FFF','294','000','E21','DAA'][obj[8].charAt(i)]; //colors : white,green,black,red,flesh
+            color = obj[8].charAt(i);
+            c.fillStyle = '#' + color + color + color;
             c.fillRect(obj[1]+zoom*(i%size), obj[2]+zoom*(Math.floor(i/size)), zoom, zoom);
         }
-        
+
         //new game ?
         objects.length < 2 ? newGame() : 0;
     });
