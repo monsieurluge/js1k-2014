@@ -10,19 +10,20 @@
 M = Math;
 R = M.random;
 A = M.abs;
-J = clearInterval;
 
 //init
 //L:level
+//S:score
 //W:arena size (width & height)
 L = 0;
+S = 0;
 W = 500;
 
 //add the player
 //type, x, y, dx, dy, zoom, speed, timebeforefire, tiles, size
 //O:objects
 //P:player
-O = [[2, 9, 9, 1, 0, 4, 3, 0, 'faafa115f23af13f', 4]];
+O = [[2, 9, 9, 1, 0, 4, 3, 0, 'eaaea115e23ae13e', 4]];
 P = O[0];
 
 //keys
@@ -35,15 +36,14 @@ onkeydown = function(e) {
 
 //player fires a bullet
 onclick = function(e) {
-    P[7] < 0 && B(2, P[1], P[2], e.x, e.y, 4, P);
+    P[7] < 0 && B(2, P[1], P[2], e.clientX, e.clientY, 4, P);
 };
 
-//new game
-function G() {
-    //add the ennemies
-    //type, x, y, dx, dy, zoom, speed, timebeforefire, tiles, size
-    for (o = ++L; o > 0; o--)
-        O.push([1, R()*W, R()*W, 0, 0, 4+L, 1, 30, 'ffdb23bff223f6f6', 4]);
+//game over
+function J() {
+    clearInterval(I);
+    c.fillStyle = '#F30';
+    c.fillText('GAME OVER', 50, 9);
 }
 
 //create a bullet
@@ -84,7 +84,12 @@ function D(o) {
 //cycle
 I = setInterval(function () {
     //clear the scene
-    a.width += 0;
+    c.fillStyle = '#EEE';
+    c.fillRect(0, 0, W, W);
+
+    //show the level
+    c.fillStyle = '#000';
+    c.fillText('PTS:' + S, 9, 9)
 
     //manage objects
     O.forEach(function(o) {
@@ -114,14 +119,11 @@ I = setInterval(function () {
             //check for bullet collision
             O.forEach(function(t) {
                 //collision between a player bullet and an ennemy -> destroy the ennemy
-                o[10] == 2 && t[0] == 1 && C(o, t) && D(t);
+                o[10] == 2 && t[0] == 1 && C(o, t) && S++ && D(t);
                 
                 //collision between an emmeny bullet and the player -> game over
                 o[10] == 1 && t[0] == 2 && C(o, t) && J(I);
             });
-
-            //destroy the bullet if out of the arena
-            //X < 0 || X > W || Y < 0 || Y > W ? D(o) : 0;
         }
 
         //move the object
@@ -136,9 +138,13 @@ I = setInterval(function () {
         }
 
         //destroy the object if out of the arena
-        X < 0 || X > W || Y < 0 || Y > W ? g == 2 ? J(I) : D(o) : 0;
+        X < 0 || X > W || Y < 0 || Y > W ? g == 2 ? J() : D(o) : 0;
 
         //new game ?
-        O.length < 2 && G();
+        if (O.length < 2)
+            //add the ennemies
+            for (o = ++L; o > 0; o--)
+                //type, x, y, dx, dy, zoom, speed, timebeforefire, tiles, size
+                O.push([1, R()*W, R()*W, 0, 0, 4+L, 1, 30, 'eedb23bee223e6e6', 4]);
     });
 },33);

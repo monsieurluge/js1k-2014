@@ -12,7 +12,7 @@ arenaSize = 500;
 
 //add the player
 //type, x, y, dx, dy, zoom, speed, timebeforefire, tiles, size
-objects = [[1, 9, 9, 1, 0, 4, 3, 0, 'faafa115f23af13f', 4]];
+objects = [[2, 9, 9, 1, 0, 4, 3, 0, 'faafa115f23af13f', 4]];
 player = objects[0];
 
 //keys
@@ -28,11 +28,11 @@ function newGame() {
     //add the ennemies
     //type, x, y, dx, dy, zoom, speed, timebeforefire, tiles, size
     for (object = ++level; object > 0; object--)
-        objects.push([2, Math.random()*arenaSize, Math.random()*arenaSize, 0, 0, 4+level, 1, 30, 'ffdb23bff223f6f6', 4]);
+        objects.push([1, Math.random()*arenaSize, Math.random()*arenaSize, 0, 0, 4+level, 1, 30, 'ffdb23bff223f6f6', 4]);
 }
 
 //create a bullet
-function newBullet(origintype, originx, originy, targetx, targety, speed, zoom) {
+function newBullet(origintype, originx, originy, targetx, targety, zoom, originObject) {
     dx = targetx-originx;
     dy = targety-originy;
     
@@ -46,7 +46,10 @@ function newBullet(origintype, originx, originy, targetx, targety, speed, zoom) 
     
     //create the bullet
     //type, x, y, dx, dy, zoom, speed, N#A, tiles, size, origin
-    objects.push([3, originx, originy, dx, dy, zoom, speed, 0, '3', 1, origintype]);
+    objects.push([3, originx, originy, dx, dy, zoom, 6, 0, '3', 1, originObject]);
+    
+    //Init the "time before next fire"
+    originObject[7] = 20;
 }
 
 //collision (or something like that)
@@ -62,12 +65,9 @@ function destroy(obj) {
     objects.splice(objects.indexOf(obj), 1);
 }
 
-//player fire a bullet
+//player fires a bullet
 onclick = function(event) {
-    if (player[7] < 0) {
-        newBullet(1, player[1], player[2], event.x, event.y, 6, 4);
-        player[7] = 20;
-    }
+    player[7] < 0 && newBullet(2, player[1], player[2], event.x, event.y, 4, player);
 };
 
 //cycle
@@ -75,57 +75,53 @@ interval = setInterval(function () {
     //clear the scene
     a.width += 0;
 
-    //show the level
-    c.fillText('lvl' + level, 5, 9);
-
     //manage objects
     objects.forEach(function(obj) {
+        //some vars
+        objType = obj[0];
+        objX = obj[1];
+        objY = obj[2];
+        objZoom = obj[5];
+        objSpeed = obj[6];
+        objSize = obj[9];
+        
         //reduce the 'next time before firing again'
         obj[7]--;
         
         //ennemy
-        if (obj[0] == 2) {
+        if (objType < 2) {
             //move to the player
-            obj[3] = obj[1] < player[1] ? 1 : -1;
-            obj[4] = obj[2] < player[2] ? 1 : -1;
+            obj[3] = objX < player[1] ? 1 : -1;
+            obj[4] = objY < player[2] ? 1 : -1;
 
-            if (obj[7] < 0) {
-                //fire a bullet
-                newBullet(2, obj[1], obj[2], player[1], player[2], obj[6]*4, obj[5]);
-                obj[7] = 30;
-            }
+            //fire a bullet
+            obj[7] < 0 && newBullet(1, objX, objY, player[1], player[2], obj[5], obj);
         }
 
         //bullet
-        if (obj[0] == 3) {
+        if (objType > 2) {
             //check for bullet collision
             objects.forEach(function(target) {
-                //collision between a player bullet and an ennemy ?
-                if (obj[10] == 1 && target[0] == 2 && isCollision(obj, target)) {
-                    destroy(target);
-                    destroy(obj);
-                }
-                
-                //collision between an emmeny bullet and the player ?
-                obj[10] == 2 && target[0] == 1 && isCollision(obj, target) ? clearInterval(interval) : 0;
+                //collision between a player bullet and an ennemy -> destroy the ennemy
+                obj[10] == 2 && target[0] == 1 && isCollision(obj, target) && destroy(target);
+
+                //collision between an emmeny bullet and the player -> game over
+                obj[10] == 1 && target[0] == 2 && isCollision(obj, target) && clearInterval(interval);
             });
 
             //destroy the bullet if out of the arena
-            obj[1] < 0 || obj[1] > arenaSize || obj[2] < 0 || obj[2] > arenaSize ? destroy(obj) : 0;
+            objX < 0 || objX > arenaSize || objY < 0 || objY > arenaSize ? destroy(obj) : 0;
         }
 
         //move the object
-        obj[1] += obj[3]*obj[6];
-        obj[2] += obj[4]*obj[6];
+        objX = obj[1] += obj[3]*objSpeed;
+        objY = obj[2] += obj[4]*objSpeed;
 
         //draw the object
-        zoom = obj[5];
-        size = obj[9];
-
-        for(i = 0; i < size*size; i++) {
+        for(i = 0; i < objSize*objSize; i++) {
             color = obj[8].charAt(i);
             c.fillStyle = '#' + color + color + color;
-            c.fillRect(obj[1]+zoom*(i%size), obj[2]+zoom*(Math.floor(i/size)), zoom, zoom);
+            c.fillRect(objX+objZoom*(i%objSize), objY+objZoom*(Math.floor(i/objSize)), objZoom, objZoom);
         }
 
         //new game ?

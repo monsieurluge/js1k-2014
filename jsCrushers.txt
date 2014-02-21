@@ -1,0 +1,2 @@
+closure-compiler.appspot.com/home
+www.iteral.com/jscrush/

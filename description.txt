@@ -1,0 +1,12 @@
+** Marcel VS the Ugly Angry Little Dragons **
+
+What ?
+------
+Slain as many ugly-angry-little-dragons as possible before you die ! Yes, you'll die. Sorry.
+
+How to play :
+-------------
+ . Use the arrow keys to move
+ . Click to fire a bullet
+ . Be very careful !
+ . Be a hero !
