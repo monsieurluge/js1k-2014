@@ -1,150 +1,5 @@
-/**
- * JS1K 2014
- * http://js1k.com/2014-dragons/
- * 
- * Demo author: monsieurluge
- * Demo name : Marcel VS the Ugly Angry Little Dragons
-**/
-
-//misc
-M = Math;
-R = M.random;
-A = M.abs;
-
-//init
-//L:level
-//S:score
-//W:arena size (width & height)
-L = 0;
-S = 0;
-W = 500;
-
-//add the player
-//type, x, y, dx, dy, zoom, speed, timebeforefire, tiles, size
-//O:objects
-//P:player
-O = [[2, 9, 9, 1, 0, 4, 3, 0, 'eaaea115e23ae13e', 4]];
-P = O[0];
-
-//keys
-//left=37 up=38 right=39 down=40
-onkeydown = function(e) {
-    k = e.keyCode;
-    P[3] = A(k-38) == 1 ? k-38 : 0;
-    P[4] = A(k-39) == 1 ? k-39 : 0;
-};
-
-//player fires a bullet
-onclick = function(e) {
-    P[7] < 0 && B(2, P[1], P[2], e.clientX, e.clientY, 4, P);
-};
-
-//game over
-function J() {
-    clearInterval(I);
-    c.fillStyle = '#F30';
-    c.fillText('GAME OVER', 50, 9);
-}
-
-//create a bullet
-//originType, originX, originY, targetX, targetY, zoom, originObject
-function B(o, x, y, v, w, z, U) {
-    i = v-x;
-    j = w-y;
-
-    if (A(i) < A(j)) {
-        i = i/A(j);
-        j = j/A(j);
-    } else {
-        j = j/A(i);
-        i = i/A(i);
-    }
-
-    //create the bullet
-    //type, x, y, dx, dy, zoom, speed, N#A, tiles, size, origin
-    O.push([3, x, y, i, j, z, 6, 0, '3', 1, o]);
-    
-    //Init the "time before next fire"
-    U[7] = 20;
-}
-
-//collision (or something like that)
-function C(o, t) {
-    x = o[1] - t[1];
-    y = o[2] - t[2];
-
-    return M.sqrt(x*x + y*y) < 14;
-}
-
-//destroy an object
-function D(o) {
-    O.splice(O.indexOf(o), 1);
-}
-
-//cycle
-I = setInterval(function () {
-    //clear the scene
-    c.fillStyle = '#EEE';
-    c.fillRect(0, 0, W, W);
-
-    //show the level
-    c.fillStyle = '#000';
-    c.fillText('PTS:' + S, 9, 9)
-
-    //manage objects
-    O.forEach(function(o) {
-        //some vars
-        g = o[0]; //object type
-        X = o[1]; //pos x
-        Y = o[2]; //pos y
-        z = o[5]; //zoom
-        v = o[6]; //speed
-        s = o[9]; //size
-
-        //reduce the 'next time before firing again'
-        o[7]--;
-
-        //ennemy
-        if (g < 2) {
-            //move to the player
-            o[3] = X < P[1] ? 1 : -1;
-            o[4] = Y < P[2] ? 1 : -1;
-
-            //fires a bullet
-            o[7] < 0 && B(1, X, Y, P[1], P[2], z, o);
-        }
-
-        //bullet
-        if (g > 2) {
-            //check for bullet collision
-            O.forEach(function(t) {
-                //collision between a player bullet and an ennemy -> destroy the ennemy
-                o[10] == 2 && t[0] == 1 && C(o, t) && S++ && D(t);
-                
-                //collision between an emmeny bullet and the player -> game over
-                o[10] == 1 && t[0] == 2 && C(o, t) && J(I);
-            });
-        }
-
-        //move the object
-        X = o[1] += o[3]*v;
-        Y = o[2] += o[4]*v;
-
-        //draw the object
-        for(i = 0; i < s*s; i++) {
-            p = o[8].charAt(i);
-            c.fillStyle = '#' + p + p + p;
-            c.fillRect(X+z*(i%s), Y+z*(M.floor(i/s)), z, z);
-        }
-
-        //destroy the object if out of the arena
-        X < 0 || X > W || Y < 0 || Y > W ? g == 2 ? J() : D(o) : 0;
-
-        //new game ?
-        if (O.length < 2)
-            //add the ennemies
-            for (o = ++L; o > 0; o--)
-                //type, x, y, dx, dy, zoom, speed, timebeforefire, tiles, size
-                O.push([1, R()*W, R()*W, 0, 0, 4+L, 1, 30, 'eedb23bee223e6e6', 4]);
-    });
-},33);
+_ = 'M=Math;R=_random;A=_abs;S=L=W=50O=[[2,14,3"ce77ece79e9^^`^9```H]P=O[0onkeydown=k=b.keyCode;38)?K8:49)?K9:0};onclick=~7]B(2	X,Y,4,P; J(clearIF3GAME OVERH0 BU,e,f,h,l,mi=f-d;j=h-e;A!)<A(j)?!j$jj)):(ji$ii)3,d,e,i,j,l,6"3",b]mN=20} CUx1Z1y2Z2return ^>_sqrt(x*x+y*y D@splice(@indexOf$1I=set(a.width+=EEE";0W,W00PTS:"+Sbg0X1Y2z5v6s9bN--;2>g[3]=X<1b[4]=Y<2~bNB(X,Y	z,b)2<gd21S++D(d12J(IX1]+3]*v;Y2]+4]*v;Q!=i<s*s;i++)p8].charAt!$"+p+p+p,X+i%s*z,Y+z*_floor!/s$z,z~X||X>W||~Y||Y>W?2==g?J():D):if(2>@length)Q=++L;0<b;b--)*W,*W0,4+*L,30*,"eeeee11e79316bde111ee3e3eH],33functionStyle="#=b[c.fill==d[0]CU));@QEach((=A(	,1],2],]+2.5*d[5](b0";Text("){&&,0,Interval(];b.client@push([]=1=KP[)}R()]?1:-0;=10]Rect(,91,!(i$),@O.H",5Kk-3N[7]QforU,dZ]-(d[^14_M.`e4~0>/';
+for (Y in $ = '~`_^ZUQNKH@$!	')
+    with (_.split($[Y]))
+        _ = join(pop());
+eval(_)
